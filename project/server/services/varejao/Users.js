@@ -1,4 +1,4 @@
-import db from '../../databases-connections/postgresql.mjs'
+const db = require('../../databases-connections/postgresql.js')
 
 function checkIfLoginExists(login) {
   return new Promise(async (resolve, reject) => {
@@ -16,23 +16,23 @@ function checkIfLoginExists(login) {
   })
 }
 
-function getOne(login, password) {
+function login(login, password) {
   return new Promise(async (resolve, reject) => {
     try {
       const { rows: user } = await db.query('SELECT login, id_client FROM users WHERE login = $1 AND password = $2', [login, password])
-      resolve(user)
+      resolve(user.length ? user[0] : false)
     } catch (error) {
       reject(error)
     }
   })
 }
 
-function saveOne(login, password) {
-  return db.query('INSERT INTO users (login, password) VALUES ($1, $2)', [login, password])
+function saveOne(login, password, id_client) {
+  return db.query('INSERT INTO users (login, password, id_client) VALUES ($1, $2, $3)', [login, password, id_client])
 }
 
-export default {
+module.exports = {
   checkIfLoginExists,
-  getOne,
+  login,
   saveOne
 }

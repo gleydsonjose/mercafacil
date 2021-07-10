@@ -1,4 +1,4 @@
-import postgresql from 'pg'
+const postgresql = require('pg')
 
 const pool = new postgresql.Pool({
   user: 'admin',
@@ -8,6 +8,6 @@ const pool = new postgresql.Pool({
   port: 5432,
 })
 
-export default {
+module.exports = {
   query: (query, params) => pool.query(query, params)
 }

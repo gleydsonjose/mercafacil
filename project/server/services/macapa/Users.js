@@ -1,4 +1,4 @@
-import db from '../../databases-connections/mysql.mjs'
+const db = require('../../databases-connections/mysql.js')
 
 function checkIfLoginExists(login) {
   return new Promise(async (resolve, reject) => {
@@ -16,23 +16,23 @@ function checkIfLoginExists(login) {
   })
 }
 
-function getOne(login, password) {
+function login(login, password) {
   return new Promise(async (resolve, reject) => {
     try {
       const user = await db.query('SELECT login, id_client FROM users WHERE login = ? AND password = ?', [login, password])
-      resolve(user)
+      resolve(user.length ? JSON.parse(JSON.stringify(user[0])) : false)
     } catch (error) {
       reject(error)
     }
   })
 }
 
-function saveOne(login, password) {
-  return db.query('INSERT INTO users (login, password) VALUES (?, ?)', [login, password])
+function saveOne(login, password, id_client) {
+  return db.query('INSERT INTO users (login, password, id_client) VALUES (?, ?, ?)', [login, password, id_client])
 }
 
-export default {
+module.exports = {
   checkIfLoginExists,
-  getOne,
+  login,
   saveOne
 }

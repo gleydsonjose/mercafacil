@@ -1,4 +1,4 @@
-import mysql from 'mysql'
+const mysql = require('mysql')
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -27,6 +27,6 @@ function query(query, params = []) {
   })
 }
 
-export default {
+module.exports = {
   query
 }
