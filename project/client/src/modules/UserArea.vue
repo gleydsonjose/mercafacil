@@ -10,12 +10,21 @@
 
 <script>
 import AsideMenu from './AsideMenu.vue'
+import { mapActions } from 'vuex'
 
 export default {
   name: "UserArea",
 
   components: {
     AsideMenu
+  },
+
+  mounted() {
+    this.getAllContacts()
+  },
+
+  methods: {
+    ...mapActions(['getAllContacts'])
   }
 }
 </script>

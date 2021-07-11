@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import Request from '../helpers/Request'
 
 export default {
@@ -61,17 +61,12 @@ export default {
     ...mapGetters(['getUserDataFromSession'])
   },
 
-  mounted() {
-    this.getAllContacts()
-  },
-
   methods: {
     ...mapMutations([
       'OPEN_NOTIFICATION',
       'DELETE_CONTACT',
       'SET_CURRENT_ACTIVE_MENU_ITEM'
     ]),
-    ...mapActions(['getAllContacts']),
 
     goToEditContact(id) {
       this.SET_CURRENT_ACTIVE_MENU_ITEM('')
