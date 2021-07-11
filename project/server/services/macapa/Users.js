@@ -1,4 +1,4 @@
-const db = require('../../databases-connections/mysql.js')
+const db = require('../../databases/connections/mysql.js')
 
 function checkIfLoginExists(login) {
   return new Promise(async (resolve, reject) => {

@@ -1,4 +1,4 @@
-const db = require('../../databases-connections/postgresql.js')
+const db = require('../../databases/connections/postgresql.js')
 
 function checkIfLoginExists(login) {
   return new Promise(async (resolve, reject) => {

@@ -1,4 +1,4 @@
-const db = require('../../databases-connections/postgresql.js')
+const db = require('../../databases/connections/postgresql.js')
 
 function getAll() {
   return new Promise(async (resolve, reject) => {

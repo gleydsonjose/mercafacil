@@ -1,4 +1,4 @@
-const db = require('../../databases-connections/mysql.js')
+const db = require('../../databases/connections/mysql.js')
 
 function getAll() {
   return new Promise(async (resolve, reject) => {
