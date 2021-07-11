@@ -3,7 +3,7 @@ const db = require('../../databases/connections/mysql.js')
 function getAll() {
   return new Promise(async (resolve, reject) => {
     try {
-      const contacts = await db.query('SELECT * FROM contacts')
+      const contacts = await db.query('SELECT * FROM contacts ORDER BY id')
       resolve(contacts)
     } catch (error) {
       reject(error)
