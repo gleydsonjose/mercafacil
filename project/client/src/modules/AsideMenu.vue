@@ -3,11 +3,11 @@
     <header class="aside-menu__header">
       <h1 class="aside-menu__header-title">
         <i class="fas fa-shopping-basket aside-menu__header-title-icon"></i>
-        {{ currentClient.description }}
+        {{ currentClient && currentClient.description }}
       </h1>
       <h2 class="aside-menu__header-subtitle">
         <i class="fas fa-user aside-menu__header-subtitle-icon"></i>
-        Bem vindo {{ getUserDataFromSession.login }}
+        Bem vindo {{ getUserDataFromSession && getUserDataFromSession.login }}
       </h2>
     </header>
 
@@ -41,17 +41,6 @@ import { mapState, mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'AsideMenu',
-
-  props: {
-    user: {
-      type: Object,
-      default: () => ({
-        login: '',
-        id_client: ''
-      }),
-      required: false
-    }
-  },
 
   computed: {
     ...mapState(['clients', 'current_active_menu_item']),

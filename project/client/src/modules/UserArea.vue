@@ -10,10 +10,20 @@
 
 <script>
 import AsideMenu from './AsideMenu.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 
 export default {
   name: "UserArea",
+
+  beforeRouteEnter(to, from, next) {
+    const token = sessionStorage.getItem('token')
+
+    if (token) {
+      next(vm => {
+        vm.SET_USER_IS_AUTHENTICATED(true)
+      })
+    }
+  },
 
   components: {
     AsideMenu
@@ -24,6 +34,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations(['SET_USER_IS_AUTHENTICATED']),
     ...mapActions(['getAllContacts'])
   }
 }
