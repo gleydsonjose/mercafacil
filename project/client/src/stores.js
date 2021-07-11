@@ -72,13 +72,17 @@ export default {
       status: '',
       show: false,
       message: ''
-    }
+    },
+
+    user_is_authenticated: false
   },
 
   getters: {
-    getUserDataFromSession() {
-      const userData = jwt_decode(sessionStorage.getItem('token'))
-      return userData
+    getUserDataFromSession(state) {
+      if (state.user_is_authenticated) {
+        const userData = jwt_decode(sessionStorage.getItem('token'))
+        return userData
+      }
     },
 
     currentClient(state, getters) {
@@ -116,7 +120,11 @@ export default {
     },
 
     CLOSE_NOTIFICATION(state, payload) {
-      state.notification_options.show = payload.show
+      state.notification_options = payload
+    },
+
+    SET_USER_IS_AUTHENTICATED(state, payload) {
+      state.user_is_authenticated = payload
     }
   },
 

@@ -62,7 +62,8 @@ export default {
     ...mapMutations([
       'SET_CONTACTS',
       'SET_CURRENT_ACTIVE_MENU_ITEM',
-      'OPEN_NOTIFICATION'
+      'OPEN_NOTIFICATION',
+      'SET_USER_IS_AUTHENTICATED'
     ]),
 
     goToContacts() {
@@ -84,6 +85,8 @@ export default {
 
       this.SET_CONTACTS([])
       this.SET_CURRENT_ACTIVE_MENU_ITEM('')
+      this.SET_USER_IS_AUTHENTICATED(false)
+      
       this.$router.replace({ name: 'login' })
 
       this.OPEN_NOTIFICATION({

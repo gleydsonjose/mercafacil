@@ -114,7 +114,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['OPEN_NOTIFICATION']),
+    ...mapMutations(['OPEN_NOTIFICATION', 'SET_USER_IS_AUTHENTICATED']),
 
     changeErrorValue(errorName, errorValue) {
       this.errors[errorName] = errorValue
@@ -139,6 +139,7 @@ export default {
 
         if (responseData.status === 'success') {
           sessionStorage.setItem('token', responseData.data.token)
+          this.SET_USER_IS_AUTHENTICATED(true)
 
           this.goToUserArea()
         }
