@@ -3,18 +3,34 @@ import UserArea from './modules/UserArea.vue'
 import Register from './modules/Register.vue'
 import Contacts from './modules/Contacts.vue'
 import AddContact from './modules/AddContact.vue'
+import EditContact from './modules/EditContact.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '*',
     beforeEnter: (to, from, next) => {
-      next('/login')
+      const token = sessionStorage.getItem('token')
+
+      if (token) {
+        next({ name: 'contacts' })
+      } else {
+        next({ name: 'login' })
+      }
     }
   },
   {
     path: '/user-area',
     name: 'user-area',
     component: UserArea,
+    beforeEnter: (to, from, next) => {
+      const token = sessionStorage.getItem('token')
+
+      if (token) {
+        next()
+      } else {
+        next({ name: 'login' })
+      }
+    },
     children: [
       {
         path: '/',
@@ -28,10 +44,24 @@ const routes = [
         }
       },
       {
-        path: 'add-contact',
+        path: 'contact/add',
         name: 'add-contact',
         components: {
           userAreaView: AddContact
+        }
+      },
+      {
+        path: 'contact/edit/:id',
+        name: 'edit-contact',
+        components: {
+          userAreaView: EditContact
+        },
+        beforeEnter: (to, from, next) => {
+          if (!isNaN(Number(to.params.id))) {
+            next()
+          } else {
+            next({ name: 'contacts' })
+          }
         }
       }
     ]
@@ -39,12 +69,30 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      const token = sessionStorage.getItem('token')
+
+      if (token) {
+        next({ name: 'contacts' })
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/register',
     name: 'register',
-    component: Register
+    component: Register,
+    beforeEnter: (to, from, next) => {
+      const token = sessionStorage.getItem('token')
+
+      if (token) {
+        next({ name: 'contacts' })
+      } else {
+        next()
+      }
+    }
   }
 ]
 

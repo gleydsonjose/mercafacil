@@ -1,7 +1,10 @@
 <template>
   <section class="contacts">
     <header class="contacts__header">
-      <h1 class="contacts__title">Contatos</h1>
+      <h1 class="contacts__title">
+        <i class="fas fa-th-list contacts__title-icon"></i>
+        Contatos
+      </h1>
     </header>
 
     <table class="contacts__table">
@@ -9,25 +12,36 @@
         <tr class="contacts__tr-head">
           <th class="contacts__th">Nome</th>
           <th class="contacts__th">Celular</th>
+          <th class="contacts__th">Editar</th>
+          <th class="contacts__th">Excluir</th>
         </tr>
       </thead>
 
       <tbody class="contacts__tbody">
-        <tr class="contacts__tr-body">
-          <td class="contacts__td">
-            Nome 1
-          </td>
-          <td class="contacts__td">
-            Nome 2
-          </td>
-        </tr>
+        <template v-if="contacts.length">
+          <tr
+            class="contacts__tr-body"
+            v-for="contact in contacts"
+            :key="contact.id"
+          >
+            <td class="contacts__td">
+              {{ contact.name }}
+            </td>
+            <td class="contacts__td">
+              {{ contact.cellphone }}
+            </td>
+            <td class="contacts__td" @click="goToEditContact(contact.id)">
+              <i class="fas fa-pen-square contacts__edit-icon"></i>
+            </td>
+            <td class="contacts__td" @click="deleteContact(contact.id)">
+              <i class="fas fa-window-close contacts__delete-icon"></i>
+            </td>
+          </tr>
+        </template>
 
-        <tr class="contacts__tr-body">
-          <td class="contacts__td">
-            0000-0000
-          </td>
-          <td class="contacts__td">
-            1111-1111
+        <tr class="contacts__tr-body" v-else>
+          <td class="contacts__td" colspan="2">
+            Não há contatos cadastrados
           </td>
         </tr>
       </tbody>
@@ -36,8 +50,53 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import Request from '../helpers/Request'
+
 export default {
-  name: 'Contacts'
+  name: 'Contacts',
+
+  computed: {
+    ...mapState(['contacts']),
+    ...mapGetters(['getUserDataFromSession'])
+  },
+
+  mounted() {
+    this.getAllContacts()
+  },
+
+  methods: {
+    ...mapMutations([
+      'OPEN_NOTIFICATION',
+      'DELETE_CONTACT',
+      'SET_CURRENT_ACTIVE_MENU_ITEM'
+    ]),
+    ...mapActions(['getAllContacts']),
+
+    goToEditContact(id) {
+      this.SET_CURRENT_ACTIVE_MENU_ITEM('')
+      this.$router.push({ name: 'edit-contact', params: { id } })
+    },
+
+    async deleteContact(id) {
+      const responseData = await Request(
+        `http://localhost:5000/api/contact/${id}`,
+        'DELETE',
+        null,
+        true
+      )
+
+      if (responseData.status === 'success') {
+        this.DELETE_CONTACT({ id })
+      }
+
+      this.OPEN_NOTIFICATION({
+        status: responseData.status,
+        show: true,
+        message: responseData.message
+      })
+    }
+  }
 }
 </script>
 
@@ -45,8 +104,8 @@ export default {
 .contacts {
   display: flex;
   flex-flow: column nowrap;
-  margin: 1.5em 0 0 1em;
-  width: 600px;
+  margin: 1.5em 0 1.5em 1em;
+  width: 700px;
 }
 
 .contacts__title {
@@ -61,7 +120,7 @@ export default {
 
 .contacts__th, .contacts__td {
   padding: .6em;
-  text-align: left;
+  text-align: center;
 }
 
 .contacts__th {
@@ -69,5 +128,25 @@ export default {
   background-color: var(--black);
   color: var(--white);
   border-collapse: collapse;
+}
+
+.contacts__edit-icon {
+  cursor: pointer;
+  color: var(--green);
+  transition: .15s color ease-in;
+}
+
+.contacts__edit-icon:hover {
+  color: var(--dark-green);
+}
+
+.contacts__delete-icon {
+  cursor: pointer;
+  color: var(--red);
+  transition: .15s color ease-in;
+}
+
+.contacts__delete-icon:hover {
+  color: var(--dark-red);
 }
 </style>

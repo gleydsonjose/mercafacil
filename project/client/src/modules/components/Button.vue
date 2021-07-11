@@ -1,16 +1,24 @@
 <template>
   <button
-    v-if="buttonStyle === 'transparent'" :type="buttonType"
-    class="button button--link"
+    v-if="buttonStyle === 'outline'" :type="buttonType"
+    class="button button--outline"
+    :class="buttonAdditionalClass"
     @click="$emit('clickEvent')"
+    :disabled="disabled"
   >
+    <i class="button__icon" :class="buttonIcon"></i>
     {{ buttonText }}
   </button>
 
   <button
-    v-else :type="buttonType" class="button"
+    v-else
+    :type="buttonType"
+    class="button"
+    :class="buttonAdditionalClass"
     @click.prevent="$emit('clickEvent')"
+    :disabled="disabled"
   >
+    <i class="button__icon" :class="buttonIcon"></i>
     {{ buttonText }}
   </button>
 </template>
@@ -36,6 +44,27 @@ export default {
       type: String,
       default: '',
       required: false
+    },
+
+    buttonIcon: {
+      type: String,
+      default: '',
+      required: false
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    }
+  },
+
+  computed: {
+    buttonAdditionalClass() {
+      return {
+        'button--outline-disabled': this.disabled && this.buttonStyle === 'outline',
+        'button--disabled': this.disabled
+      }
     }
   }
 }
@@ -45,27 +74,44 @@ export default {
 .button {
   cursor: pointer;
   padding: .8em 1.3em;
-  border: none;
+  border: 1px solid var(--dark-white);
   border-radius: 3px;
   background-color: var(--dark-white);
   color: var(--black);
   font-size: 10pt;
-  transition: .15s background-color ease-in, .15s color ease-in;
+  transition: .15s background-color ease-in, .15s border ease-in, .15s color ease-in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button__icon {
+  margin-right: .5em;
 }
 
 .button:hover {
   background-color: var(--black);
+  border: 1px solid var(--black);
   color: var(--dark-white);
 }
 
-.button--link {
+.button--outline {
   background: transparent;
   color: var(--dark-white);
-  padding: .4em 0;
 }
 
-.button--link:hover {
-  text-decoration: underline;
+.button--disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.button--disabled:hover {
+  background-color: var(--dark-white);
+  border: 1px solid var(--dark-white);
+  color: var(--black);
+}
+
+.button--outline-disabled:hover {
   background: transparent;
   color: var(--dark-white);
 }

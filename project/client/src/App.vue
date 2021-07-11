@@ -1,10 +1,20 @@
-<template>
-  <router-view></router-view>
+d<template>
+  <div>
+    <Notification />
+    
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-export default {
+import Notification from './modules/components/Notification.vue'
 
+export default {
+  name: 'App',
+
+  components: {
+    Notification
+  }
 }
 </script>
 
@@ -16,7 +26,11 @@ body {
   --dark-white: #ddd;
   --black: #222;
   --white: #fff;
-  --green-light: #defe82;
+  --light-green: #defe82;
+  --green: #2d922d;
+  --dark-green: #286928;
+  --dark-red: #922d2d;
+  --red: #e53535;
   margin: 0;
   padding: 0;
   box-sizing: border-box;

@@ -1,13 +1,13 @@
 <template>
-  <section class="add-contact">
-    <header class="add-contact__header">
-      <h1 class="add-contact__title">
-        <i class="fas fa-plus-square add-contact__title-icon"></i>
-        Adicionar Contato
+  <section class="edit-contact">
+    <header class="edit-contact__header">
+      <h1 class="edit-contact__title">
+        <i class="fas fa-pen-square edit-contact__title-icon"></i>
+        Editar Contato
       </h1>
     </header>
 
-    <form class="add-contact-form">
+    <form class="edit-contact-form">
       <InputForm
         label="Nome"
         inputMode="inverted"
@@ -25,7 +25,7 @@
         inputMode="inverted"
         label="Celular"
         inputId="Celular"
-        :inputMaxLength="currentClient.contactFormOptions.errors.cellphone.max"
+        inputMaxLength="19"
         :error-value="errors.cellphone"
         error-name="cellphone"
         :error-options="currentClient.contactFormOptions.errors.cellphone"
@@ -34,12 +34,12 @@
         v-model="form.cellphone"
       />
 
-      <section class="add-contact-form__btn-group">
+      <section class="edit-contact-form__btn-group">
         <Button
-          buttonText="Adicionar"
+          buttonText="Editar"
           buttonType="submit"
-          buttonIcon="fas fa-plus-square"
-          @clickEvent="addContact"
+          buttonIcon="fas fa-pen-square"
+          @clickEvent="editContact"
           :disabled="!formHasNoErrors || someFormInputsIsEmpty"
         />
       </section>
@@ -54,16 +54,23 @@ import { mapGetters, mapMutations } from 'vuex'
 import Request from '../helpers/Request'
 
 export default {
-  name: 'AddContact',
+  name: 'EditContact',
 
   components: {
     InputForm,
     Button
   },
 
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.getContact(to.params.id)
+    })
+  },
+
   data() {
     return {
       form: {
+        id: 0,
         name: '',
         cellphone: ''
       },
@@ -88,28 +95,54 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['OPEN_NOTIFICATION']),
+    ...mapMutations(['OPEN_NOTIFICATION', 'UPDATE_CONTACT']),
 
     changeErrorValue(errorName, errorValue) {
       this.errors[errorName] = errorValue
     },
+
+    async getContact(id) {
+      const responseData = await Request(
+        `http://localhost:5000/api/contact/${id}`,
+        'GET',
+        null,
+        true
+      )
+
+      if (!Object.keys(responseData.data).length) {
+        this.$router.replace({ name: 'contacts' })
+      }
+
+      if (responseData.status === 'success') {
+        this.form = {
+          id: responseData.data.contact.id,
+          name: responseData.data.contact.name,
+          cellphone: responseData.data.contact.cellphone
+        }
+      }
+
+      if (responseData?.message) {
+        this.OPEN_NOTIFICATION({
+          status: responseData.status,
+          show: true,
+          message: responseData.message
+        })
+      }
+    },
     
-    async addContact() {
+    async editContact() {
       if (this.formHasNoErrors && !this.someFormInputsIsEmpty) {
         const responseData = await Request(
           'http://localhost:5000/api/contact',
-          'POST',
+          'PUT',
           this.form,
           true
         )
 
         if (responseData.status === 'success') {
-          this.form = {
-            name: '',
-            cellphone: ''
-          }
+          this.UPDATE_CONTACT(responseData.data.contact)
         }
-
+        
         this.OPEN_NOTIFICATION({
           status: responseData.status,
           show: true,
@@ -122,19 +155,19 @@ export default {
 </script>
 
 <style scoped>
-.add-contact {
+.edit-contact {
   display: flex;
   flex-flow: column nowrap;
   margin: 1.5em 0 1.5em 1em;
   width: 400px;
 }
 
-.add-contact__title {
+.edit-contact__title {
   margin: 0 0 .7em 0;
   font-size: 18pt;
 }
 
-.add-contact-form__btn-group {
+.edit-contact-form__btn-group {
   margin-top: .1em;
   display: flex;
   justify-content: flex-end;
