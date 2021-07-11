@@ -15,7 +15,7 @@ function getOne(id) {
   return new Promise(async (resolve, reject) => {
     try {
       const { rows: contact } = await db.query('SELECT * FROM contacts WHERE id = $1', [id])
-      resolve(contact)
+      resolve(contact[0])
     } catch (error) {
       reject(error)
     }

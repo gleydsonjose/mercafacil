@@ -8,6 +8,7 @@ const router = express.Router()
 router.post('/login', async (req, res) => {
   const { login, password, id_client } = req.body
 
+
   try {
     const currentClient = getCurrentClientData(id_client)
     const user = await Services[currentClient.name]['UsersServices']['login'](login, password, id_client)
