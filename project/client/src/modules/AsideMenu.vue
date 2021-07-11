@@ -104,7 +104,7 @@ export default {
   background-color: var(--black);
   width: 100%;
   max-width: 230px;
-  height: 100vh;
+  height: 100%;
   position: fixed;
   box-shadow: 2px 0 3px var(--dark-white);
 }
